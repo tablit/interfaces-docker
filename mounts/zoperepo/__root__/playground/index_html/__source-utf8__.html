@@ -5,33 +5,69 @@
     <script src="/lib/js/javascript.js"></script>
 	<script src="examples_js"></script>
     <script src="app_js"></script>
+    <link rel="stylesheet" href="playground_css">
 
     <header>
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
           <div class="container-fluid">
-        
+
             <a class="navbar-brand" href="/index_html">
               <img src="lib/assets/img/logo" width="50px" height="50px" class="d-inline-block align-text-top"></img>
             </a>
-        
+
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+
               <div class="navbar-nav">
                 <a class="nav-link active fs-1" aria-current="page" href="#">Playground</a>
               </div>
-              <div class="navbar-nav">
-                <div class="input-group">
-                    <label class="input-group-text" for="choreo_id">Record to use as DATA</label>
-                    <select class="form-select" id="choreo_id" aria-label="Record to use as DATA">
-                    </select>
-                    <label class="input-group-text" for="example_chooser">Examples</label>
-                    <select class="form-select" id="example_chooser" data-tour="step: 4; title: Code examples; content: Code examples for inspiration can be selected here">
-                    </select>
-                </div>
+
+              <div class="navbar-nav dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Examples
+                </a>
+                <ul id="examples_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                </ul>
               </div>
+
+              <div class="navbar-nav dropdown">
+              </div>
+
+              <div class="navbar-nav dropdown flex-grow-1">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Import / Export
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa-solid fa-file-import"></i>
+                            Import code
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa-solid fa-download"></i>
+                            Download code
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa-solid fa-download"></i>
+                            Download SVG
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="#">
+                            <i class="fa-solid fa-download"></i>
+                            Download PNG
+                        </a>
+                    </li>
+                </ul>
+              </div>
+
             </div>
           </div>
         </nav>
@@ -39,70 +75,106 @@
     </header>
 
     <main>
-        <!-- Masthead -->
-        <section class="container-fluid">
-          <div id="masthead" class="container">
-            <button class="btn btn-success" id="run_code" type="button">
-                <i class="fa-solid fa-play"></i>
-                <span id="run_label">Run code</span>
-                <span id="data_loading" style="display: none;" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            </button>
-          </div>
-        </section>
-        <!-- Primary Content Area -->
-        <section id="mainContent" class="container-fluid">
-          <div class="NOTAcontainer">
-            <div class="row">
-              <!-- Sidebar -->
-              <aside id="sidebar" class="col-md-1 order-2">
-                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-outline-secondary" id="import_code" type="button">
-                        <i class="fa-solid fa-file-import"></i>
-                        Import code
+        <div class="container-fluid" id="mainContent">
+            <div class="row mb-1" id="mode_toolbar">
+                <div class="col-1">
+                    <button id="mode_toggle_btn" type="button" class="btn btn-secondary w-100">
+                        DB Mode
                     </button>
-                  </div>
                 </div>
-                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-outline-secondary" id="download_code" type="button">
-                        <i class="fa-solid fa-download"></i>
-                        Download code
+                <div class="col-10" id="database_tools">
+                    <a class="dropdown-toggle btn btn-secondary w-50" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Records
+                    </a>
+                    <ul id="choreo_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    </ul>
+                    <button id="upload_json" type="button" class="btn btn-secondary">
+                        Upload JSON
                     </button>
-                  </div>
-                </div>                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-outline-secondary" id="download_svg" type="button">
-                        <i class="fa-solid fa-download"></i>
-                        Download SVG
+                    <button id="scan_video" type="button" class="btn btn-secondary">
+                        Scan Video
                     </button>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <button class="btn btn-outline-secondary" id="download_png" type="button">
-                        <i class="fa-solid fa-download"></i>
-                        Download PNG
-                    </button>
-                  </div>
-                </div>
-              </aside>
-              <!-- article/content -->
-              <article id="content" class="col-md-11 order-1">
-                <div class="row">
-                    <div class="col">
-                        <div id="p5_stage"></div>
-                    </div>
-                    <div class="col">
-                        <div id="editor"></div>
-                    </div>
-                </div>
 
-              </article>
+                </div>
+                <div class="col-10 d-none" id="live_tools">
+                    <div class="input-group">
+                        <button id="start_cam_btn" type="button" class="btn btn-secondary">
+                            Start Camera
+                        </button>
+                        <label class="input-group-text" for="model_chooser">Model</label>
+                        <select class="form-select" id="model_chooser">
+                            <option value="full" selected>Full</option>
+                            <option value="lite">Lite</option>
+                        </select>
+                        <label class="input-group-text" for="numposes">Number of poses</label>
+                        <input id="numposes" type="number" class="form-control" aria-label="ws_addr" value="1">
+                        <button id="toggle_adv_live_btn" type="button" class="btn btn-secondary">
+                            Advanced options
+                        </button>
+                    </div>
+                    <div id="ws_settings" class="input-group d-none">
+                        <label class="input-group-text" for="ws_addr">Websocket address</label>
+                        <input id="ws_addr" type="text" class="form-control" aria-label="ws_addr" value="ws://127.0.0.1:4242" data-tour="step: 1; title: Websocket address; content: Enter full websocket address of websocket server here">
+                        <button class="btn btn-secondary" id="connect_ws_btn" type="button" data-tour="step: 2; title: Connect websocket; content: Connect to websocket server here">
+                            <i class="fa-solid fa-link"></i>
+                            <span id="run_label">Connect websocket</span>
+                        </button>
+                        <button disabled class="btn btn-secondary" id="broadcast_scan" type="button" data-tour="step: 30; title: Broadcast live scan; content: Broadcast live scan to websocket server. Click again to stop broadcast.">
+                            <i class="fa-solid fa-tower-broadcast"></i>
+                            <span id="broadcast_scan_label">Start broadcast</span>
+                        </button>
+                        <span id="ws_not_connected" class="badge rounded-pill bg-warning text-dark mb-2" data-tour="step: 3; title: Websocket connection indicator; content: Indicates websocket connectivity">Not connected</span>
+                        <span id="ws_connected" style="display: none;" class="badge rounded-pill bg-success mb-2">Connected</span>
+                        <span id="bc_not_running" class="badge rounded-pill bg-warning text-dark mb-2" data-tour="step: 4; title: Broadcast indicator; content: Indicates wether broadcast is running">Broadcast inactive</span>
+                        <span id="bc_running" style="display: none;" class="badge rounded-pill bg-success mb-2">Broadcast active</span>
+                    </div>
+                    <div id="model_settings" class="input-group d-none">
+                        <label class="input-group-text" for="minPoseDetectionConfidence">minPoseDetectionConfidence</label>
+                        <input type="range" min="0" max="1" value="0.5" step="0.05" id="minPoseDetectionConfidence" data-tour="step: 7; title: minPoseDetectionConfidence [0..1]; content: The minimum confidence score for the pose detection to be considered successful">
+                        <label class="input-group-text" for="minPosePresenceConfidence">minPosePresenceConfidence</label>
+                        <input type="range" min="0" max="1" value="0.5" step="0.05" id="minPosePresenceConfidence" data-tour="step: 8; title: minPosePresenceConfidence [0..1]; content: The minimum confidence score of pose presence score in the pose landmark detection">
+                        <label class="input-group-text" for="minTrackingConfidence">minTrackingConfidence</label>
+                        <input type="range" min="0" max="1" value="0.5" step="0.05" id="minTrackingConfidence" data-tour="step: 9; title: minTrackingConfidence [0..1]; content: The minimum confidence score for the pose tracking to be considered successful">
+                        <button class="btn btn-secondary" id="load_model" type="button" data-tour="step: 10; title: Load model; content: Load model to enable webcam scan.">
+                            <i class="fa-solid fa-play"></i>
+                            <span id="load_model_label">Reload Model</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-success w-100" id="run_code" type="button">
+                        <i class="fa-solid fa-play"></i>
+                        <span id="run_label">Run code</span>
+                        <span id="data_loading" style="display: none;" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    </button>
+                </div>
 
             </div>
-          </div>
-        </section>
+            <div class="row" id="work_stages">
+                <div class="col" id="visuals_stage">
+                    <div class="row justify-content-center">
+                        <div id="p5_stage" class="bg-secondary">
+                            <span>p5 stage</span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-center">
+                        <div id="webcam_stage" class="bg-secondary">
+                            <span>Webcam stage</span>
+                            <!--
+                            <div style="position: relative;" data-tour="step: 25; title: Webcam and scan stage; content: Webcam and live scan will be shown here">
+                                <video id="webcam" style="width: 1280px; height: 720px; position: abso" autoplay playsinline></video>
+                                <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+                            </div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col" id="editor_stage">
+                    <div id="editor" class=""></div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <footer class="container-fluid">

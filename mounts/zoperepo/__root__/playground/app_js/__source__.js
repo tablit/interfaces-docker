@@ -1,5 +1,5 @@
-let select_template;
-let example_template;
+let choreo_dropdown_template;
+let example_dropdown_template;
 let editor;
 let oScript;
 let oScriptText;
@@ -9,46 +9,47 @@ let stage;
 let cur_choreo_id;
 
 
-$(document).on("choreo-select-load", function(event) {
+$(document).on("choreo-dropdown-load", function(event) {
     $.getJSON("choreo/fetch", function(data) {
-        let select_html = select_template(data)
-        $("#choreo_id").html(select_html)
+        let dropdown_html = choreo_dropdown_template(data)
+        $("#choreo_dropdown").html(dropdown_html)
     })
 })
 
-$(document).on("example-select-load", function(event) {
+$(document).on("example-dropdown-load", function(event) {
     $.getJSON("get_examples", function(data) {
-        console.log(data)
-        let select_html = example_template(data)
-        $("#example_chooser").html(select_html)
+        let select_html = example_dropdown_template(data)
+        $("#examples_dropdown").html(select_html)
     })
 })
 
 $(function() {
+
     $.get(
-        "choreo_select_pt",
+        "choreo_dropdown_select_pt",
         function(data) {
-            select_template = Handlebars.compile(data)
-            $(document).trigger("choreo-select-load")
+            choreo_dropdown_template = Handlebars.compile(data)
+            $(document).trigger("choreo-dropdown-load")
         }
     )
 
     $.get(
-        "example_select_pt",
+        "example_dropdown_select_pt",
         function(data) {
-            example_template = Handlebars.compile(data)
-            $(document).trigger("example-select-load")
+            example_dropdown_template = Handlebars.compile(data)
+            $(document).trigger("example-dropdown-load")
         }
     )
 
     editor = CodeMirror(
         $("#editor")[0],
         {
-            value: EXAMPLES["template"],
+            value: EXAMPLES["stickman"],
             mode:  "javascript",
             lineNumbers: true,
         }
     )
+    editor.setOption("theme", "material");
     // https://stackoverflow.com/a/39963707
     var $sel = $('#example_chooser').on('change', function(){
         if (confirm('Unsaved changes will be lost!')) {
@@ -63,9 +64,10 @@ $(function() {
         $(this).data('currVal', $(this).val())
     }).trigger('update');
 
-    $("#run_code").click(function(event) {
-        runCode(event)
-    })
+    $("#run_code").click(runCode);
+
+    $("#mode_toggle_btn").click(toggle_mode);
+    $("#toggle_adv_live_btn").click(toggle_adv_live);
 })
 
 function runCode(event) {
@@ -111,4 +113,28 @@ function run_from_cm() {
     oScript.appendChild(oScriptText)
     document.body.appendChild(oScript)    
 
+}
+
+function select_choreo(event) {
+    let elem = $(event.target);
+    cur_choreo_id = elem.data('choreo-id');
+    $("a.dropdown-item.active[data-choreo-id]").toggleClass('active');
+    elem.toggleClass('active');
+    console.log(cur_choreo_id);
+}
+
+function toggle_mode(event) {
+    let btn = $(event.target);
+    if (btn.text() == 'Live Mode') {
+        btn.text('DB Mode');
+    } else {
+        btn.text('Live Mode');
+    }
+    $("#database_tools").toggleClass("d-none");
+    $("#live_tools").toggleClass("d-none");
+}
+
+function toggle_adv_live(event) {
+    $("#ws_settings").toggleClass("d-none");
+    $("#model_settings").toggleClass("d-none");
 }

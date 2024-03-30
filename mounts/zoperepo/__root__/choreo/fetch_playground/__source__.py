@@ -10,8 +10,8 @@ choreo_json = res['rawdata_json']
 
 result = {
     'choreo_json': choreo_json,
-    'name': res['choreo_name'],
-    'author': res['choreo_author'],
+    'choreo_name': res['choreo_name'],
+    'choreo_author': res['choreo_author'],
     'choreo_id': choreo_id,
 }
 

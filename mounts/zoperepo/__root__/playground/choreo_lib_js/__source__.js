@@ -3,7 +3,7 @@ const FPS = 30
 const SCENE_WIDTH = 640
 const SCENE_HEIGHT = 480
 
-const line_map = {
+const LINE_MAP = {
   0 : [1, 4],
   1 : [2],
   2 : [3],
@@ -31,7 +31,7 @@ const line_map = {
 // derived from
 // https://developers.google.com/mediapipe/solutions/vision/hand_landmarker#models
 // same as line_map, but for hands instead of body
-const hand_map = {
+const HAND_MAP = {
     0 : [1, 5, 17],
     1 : [2],
     2 : [3],

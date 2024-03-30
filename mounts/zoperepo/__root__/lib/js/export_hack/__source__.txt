@@ -1,0 +1,24 @@
+// make vision_bundle_js a script instead of a module to have everything in
+// in global JS namespace
+// i know this is very sloppy, but as we inject user written JS into the page
+// this is fine for now xD
+// in the future we should consider implementing a proper module structure,
+// the question will then be how to force users to write JS modules without
+// them even noticing .. ?!
+
+export{
+DrawingUtils_1 as DrawingUtils,
+FaceDetector_1 as FaceDetector,
+FaceLandmarker_1 as FaceLandmarker,
+FaceStylizer_1 as FaceStylizer,
+FilesetResolver_1 as FilesetResolver,
+GestureRecognizer_1 as GestureRecognizer,
+HandLandmarker_1 as HandLandmarker,
+ImageClassifier_1 as ImageClassifier,
+ImageEmbedder_1 as ImageEmbedder,
+ImageSegmenter_1 as ImageSegmenter,
+InteractiveSegmenter_1 as InteractiveSegmenter,
+MPImage_1 as MPImage,MPMask_1 as MPMask,
+ObjectDetector_1 as ObjectDetector,
+PoseLandmarker_1 as PoseLandmarker,vision as default
+};

@@ -12,6 +12,7 @@ result = {
     'choreo_json': choreo_json,
     'name': res['choreo_name'],
     'author': res['choreo_author'],
+    'choreo_id': choreo_id,
 }
 
 context.REQUEST.response.setHeader('Content-Type', 'application/json')

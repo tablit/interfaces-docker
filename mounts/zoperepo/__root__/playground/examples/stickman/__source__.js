@@ -1,77 +1,4 @@
 // p5js stickman example
-
-// Intended to give an example on how to work with DATA and loop over each
-// frame implicitly via draw()
-
-// Settings
-var FPS = 30
-var SCENE_WIDTH = 640
-var SCENE_HEIGHT = 480
-
-// derived from
-// https://github.com/google/mediapipe/blob/master/docs/solutions/pose.md
-// we map our joints against connected joints via indexes to draw lines from it
-// feel free to mess around with this mapping to create interesting results,
-// this basically represents the stickman, maybe u want something else?
-var line_map = {
-  0 : [1, 4],
-  1 : [2],
-  2 : [3],
-  3 : [7],
-  4 : [5],
-  5 : [6],
-  6 : [8],
-  9 : [10],
-  11: [12, 13, 23],
-  12: [14, 24],
-  13: [15],
-  14: [16],
-  15: [17, 19, 21],
-  16: [18, 20, 22],
-  17: [19],
-  18: [20],
-  23: [24, 25],
-  24: [26],
-  25: [27],
-  26: [28],
-  27: [29, 31],
-  28: [30, 32],
-}
-
-// derived from
-// https://developers.google.com/mediapipe/solutions/vision/hand_landmarker#models
-// same as line_map, but for hands instead of body
-var hand_map = {
-    0 : [1, 5, 17],
-    1 : [2],
-    2 : [3],
-    3 : [4],
-    5 : [6, 9],
-    6 : [7],
-    7 : [8],
-    9 : [10, 13],
-    10: [11],
-    11: [12],
-    13: [14, 17],
-    14: [15],
-    15: [16],
-    17: [18],
-    18: [19],
-    19: [20],
-}
-
-// basic function to find a joint by index from given frame
-// use this as a template to create a function to return joints u desire to use
-function find_by_bpindex(frame, bpindex, joint_type) {
-  for (let joint_index in frame) {
-    let joint = frame[joint_index]
-    if ((joint.index == bpindex) && (joint.type == joint_type)) {
-      return joint
-    }
-  }
-  //console.log("Warning! No matching joint found!")
-}
-
 // make sure the following line remains unchanged!
 sketch = function(p) {
 
@@ -95,10 +22,7 @@ sketch = function(p) {
     let data_chunk = DATA[index]
 
     // early exit data check
-    if (!data_chunk || data_chunk.keypoints) {
-      //console.log("Incompatible / broken data, aborting ...")
-      //console.log("This sketch is only compatible to BlazePose framewise scans")
-      //console.log("Will not work on tensorflowJS records!")
+    if (!data_chunk) {
       p.noLoop()
       return
     }
@@ -125,6 +49,13 @@ sketch = function(p) {
         p.line(x1, y1, x2, y2)
   
       }
+    }
+
+    // early exit in LIVEMODE, we have no hands and do not want to
+    // increment index as we receive fresh data directly in LIVEMODE
+    if (LIVEMODE) {
+        index = 0
+        return
     }
 
     // loop to create stickman left hand from hand_map
@@ -176,9 +107,9 @@ sketch = function(p) {
     }
 
     // loop over DATA via index variable
-    if (index > DATA.length) {
-      // no more DATA left, stop draw()-Loop
-      p.noLoop()
+    if (index == DATA.length - 1) {
+      // no more DATA left, restart
+      index = 0
     } else {
       // increment index for next run of draw() to create next frame
       index++

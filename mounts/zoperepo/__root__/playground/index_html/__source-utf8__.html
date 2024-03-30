@@ -3,6 +3,9 @@
     <script src="/lib/js/codemirror.js"></script>
     <link rel="stylesheet" href="/lib/css/codemirror.css">
     <script src="/lib/js/javascript.js"></script>
+    <script src="/lib/js/vision_bundle_js"></script>
+
+	<script src="choreo_lib_js"></script>
 	<script src="examples_js"></script>
     <script src="app_js"></script>
     <link rel="stylesheet" href="playground_css">
@@ -83,10 +86,10 @@
                     </button>
                 </div>
                 <div class="col-10" id="database_tools">
-                    <a class="dropdown-toggle btn btn-secondary w-50" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="disabled dropdown-toggle btn btn-secondary w-50" id="records_dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Records
                     </a>
-                    <ul id="choreo_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <ul id="choreo_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="records_dropdown">
                     </ul>
                     <button id="upload_json" type="button" class="btn btn-secondary">
                         Upload JSON
@@ -103,8 +106,8 @@
                         </button>
                         <label class="input-group-text" for="model_chooser">Model</label>
                         <select class="form-select" id="model_chooser">
-                            <option value="full" selected>Full</option>
-                            <option value="lite">Lite</option>
+                            <option value="full">Full</option>
+                            <option value="lite" selected>Lite</option>
                         </select>
                         <label class="input-group-text" for="numposes">Number of poses</label>
                         <input id="numposes" type="number" class="form-control" aria-label="ws_addr" value="1">
@@ -142,10 +145,10 @@
                     </div>
                 </div>
                 <div class="col-1">
-                    <button class="btn btn-success w-100" id="run_code" type="button">
+                    <button class="btn btn-success w-100 disabled" id="run_code" type="button">
                         <i class="fa-solid fa-play"></i>
                         <span id="run_label">Run code</span>
-                        <span id="data_loading" style="display: none;" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        <span id="data_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </button>
                 </div>
 
@@ -153,19 +156,17 @@
             <div class="row" id="work_stages">
                 <div class="col" id="visuals_stage">
                     <div class="row justify-content-center">
-                        <div id="p5_stage" class="bg-secondary">
+                        <div id="p5_stage">
                             <span>p5 stage</span>
                         </div>
                     </div>
                     <div class="row justify-content-center">
-                        <div id="webcam_stage" class="bg-secondary">
+                        <div id="webcam_stage">
                             <span>Webcam stage</span>
-                            <!--
-                            <div style="position: relative;" data-tour="step: 25; title: Webcam and scan stage; content: Webcam and live scan will be shown here">
-                                <video id="webcam" style="width: 1280px; height: 720px; position: abso" autoplay playsinline></video>
-                                <canvas class="output_canvas" id="output_canvas" width="1280" height="720" style="position: absolute; left: 0px; top: 0px;"></canvas>
+                            <div style="position: relative;">
+                                <video id="webcam" style="width: 640px; height: 480px;" autoplay playsinline></video>
+                                <canvas class="output_canvas" id="output_canvas" width="640" height="480" style="position: absolute; left: 0px; top: 0px;"></canvas>
                             </div>
-                            -->
                         </div>
                     </div>
                 </div>

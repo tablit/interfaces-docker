@@ -45,27 +45,30 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                     <li>
-                        <a class="dropdown-item" href="#">
-                            <i class="fa-solid fa-file-import"></i>
-                            Import code
-                        </a>
+                        <div class="input-group">
+                            <input id="import_file" type="file" class="form-control d-none">
+                            <a id="import_code" class="dropdown-item form-control" href="#">
+                                <i class="fa-solid fa-file-import"></i>
+                                Import code
+                            </a>
+                        </div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a id="download_code" class="dropdown-item">
                             <i class="fa-solid fa-download"></i>
                             Download code
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a id="download_png" class="dropdown-item disabled" href="#">
                             <i class="fa-solid fa-download"></i>
-                            Download SVG
+                            Download PNG
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="#">
+                        <a id="download_svg" class="dropdown-item disabled" href="#">
                             <i class="fa-solid fa-download"></i>
-                            Download PNG
+                            Download SVG
                         </a>
                     </li>
                 </ul>
@@ -91,10 +94,10 @@
                     </a>
                     <ul id="choreo_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="records_dropdown">
                     </ul>
-                    <button id="upload_json" type="button" class="btn btn-secondary">
+                    <button id="upload_json" type="button" class="btn btn-secondary disabled">
                         Upload JSON
                     </button>
-                    <button id="scan_video" type="button" class="btn btn-secondary">
+                    <button id="scan_video" type="button" class="btn btn-secondary disabled">
                         Scan Video
                     </button>
 

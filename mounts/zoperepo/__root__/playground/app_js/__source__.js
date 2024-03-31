@@ -24,6 +24,7 @@ let videoHeight;
 let webcamRunning = false;
 let broadcast_running = false;
 
+let websocket;
 let websocket_opened = false;
 let LIVEMODE = false;
 
@@ -72,24 +73,38 @@ $(function() {
         }
     )
     editor.setOption("theme", "material");
-    // https://stackoverflow.com/a/39963707
-    var $sel = $('#example_chooser').on('change', function(){
-        if (confirm('Unsaved changes will be lost!')) {
-            // store new value        
-            $sel.trigger('update')
-            editor.setValue(EXAMPLES[$("#example_chooser").val()])
-        } else {
-             // reset
-             $sel.val( $sel.data('currVal') )
-        }
-    }).on('update', function(){
-        $(this).data('currVal', $(this).val())
-    }).trigger('update');
 
     $("#run_code").click(runCode);
 
     $("#mode_toggle_btn").click(toggle_mode);
     $("#toggle_adv_live_btn").click(toggle_adv_live);
+    $("#broadcast_scan").click(start_broadcast);
+    $("#connect_ws_btn").click(connect_ws);
+    $("#download_code").click(function(event) {
+        saveTextAsFile(editor.getValue(), 'p5_code.js')
+    })
+
+    $("#import_code").click(function(event) {
+        $("#import_file").click();
+    })
+
+    $("#import_file").on("change", (event) => {
+        let import_file = $("#import_file")[0].files[0]
+        if (!import_file) {
+            alert("Please select a file!")
+            return
+        }
+        let import_code = ""
+        let fileReader = new FileReader()
+        fileReader.onload = function () {
+            import_code = fileReader.result
+            editor.setValue(import_code)
+        }
+        fileReader.readAsText(import_file)        
+    })
+
+    $("#download_png").click(downloadSVGAsPNG);
+    $("#download_svg").click(downloadSVGAsText);
 
     // If webcam supported, add event listener to button for when user
     // wants to activate it.
@@ -278,8 +293,8 @@ async function predictWebcam() {
             }
             if (broadcast_running) {
                 /// XXX: Make landmarks pickable!
-                //let to_send = JSON.stringify(result.landmarks);
-                //websocket.send(to_send);
+                let to_send = JSON.stringify(result.landmarks);
+                websocket.send(to_send);
             }
         });
     }
@@ -289,4 +304,107 @@ async function predictWebcam() {
         window.requestAnimationFrame(predictWebcam);
     }
 
+}
+
+function start_broadcast(event) {
+    if (websocket_opened && !broadcast_running) {
+        broadcast_running = true;
+        console.log("Broadcast started!");
+        $("#bc_not_running").hide();
+        $("#bc_running").show();
+    } else {
+        broadcast_running = false;
+        console.log("Broadcast stopped!");
+        $("#bc_not_running").show();
+        $("#bc_running").hide();
+    }
+}
+
+function connect_ws(event) {
+    ws_addr = $("#ws_addr").val();
+    websocket = new WebSocket(ws_addr);
+
+    websocket.addEventListener("open", (event) => {
+        websocket_opened = true;
+        $("#ws_not_connected").hide();
+        $("#ws_connected").show();
+        if (webcamRunning) {
+            $("#broadcast_scan").prop("disabled", false);
+        }
+    });
+}
+
+function select_example(event) {
+    let selected = $(event.target);
+    editor.setValue(EXAMPLES[selected.data('example-id')]);
+}
+
+function saveTextAsFile(textToWrite, fileNameToSaveAs) {
+	var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'}); 
+	var downloadLink = document.createElement("a");
+	downloadLink.download = fileNameToSaveAs;
+	downloadLink.innerHTML = "Download File";
+	if (window.webkitURL !== null)
+	{
+		// Chrome allows the link to be clicked
+		// without actually adding it to the DOM.
+		downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+	}
+	else
+	{
+		// Firefox requires the link to be added to the DOM
+		// before it can be clicked.
+		downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+		downloadLink.onclick = destroyClickedElement;
+		downloadLink.style.display = "none";
+		document.body.appendChild(downloadLink);
+	}
+
+	downloadLink.click();
+}
+
+function downloadSVGAsText() {
+    const svg = document.querySelector('svg');
+    if (!svg) {
+        alert("No image found, aborting ...")
+        return
+    }
+    const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
+    const a = document.createElement('a');
+    const e = new MouseEvent('click');
+    a.download = 'download.svg';
+    a.href = 'data:image/svg+xml;base64,' + base64doc;
+    a.dispatchEvent(e);
+}
+
+function downloadSVGAsPNG(e){
+    const canvas = document.createElement("canvas");
+    const svg = document.querySelector('svg');
+    if (!svg) {
+        alert("No image found, aborting ...")
+        return
+    }
+    const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
+    const w = parseInt(svg.getAttribute('width'));
+    const h = parseInt(svg.getAttribute('height'));
+    const img_to_download = document.createElement('img');
+    img_to_download.src = 'data:image/svg+xml;base64,' + base64doc;
+    console.log(w, h);
+    img_to_download.onload = function () {    
+        canvas.setAttribute('width', w);
+        canvas.setAttribute('height', h);
+        const context = canvas.getContext("2d");
+        context.drawImage(img_to_download,0,0,w,h);
+        const dataURL = canvas.toDataURL('image/png');
+        if (window.navigator.msSaveBlob) {
+          window.navigator.msSaveBlob(canvas.msToBlob(), "download.png");
+          e.preventDefault();
+        } else {
+          const a = document.createElement('a');
+          const my_evt = new MouseEvent('click');
+          a.download = 'download.png';
+          a.href = dataURL;
+          a.dispatchEvent(my_evt);
+        }
+    }  
 }

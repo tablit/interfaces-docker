@@ -101,3 +101,5 @@ function find_by_bpindex(frame, bpindex, joint_type) {
     }
   //console.log("Warning! No matching joint found!")
 }
+
+let p5_MODE = "p2d";

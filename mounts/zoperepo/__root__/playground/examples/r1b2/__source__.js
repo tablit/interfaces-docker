@@ -276,7 +276,7 @@ sketch = function(p) {
   p.setup = function()
   {
     PALETTE = PALETTES[(0.5 + p.random() * (PALETTES.length - 1)) | 0];
-    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT, p.P2D);
+    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT, p5_MODE);
 
     p.clear();
     p.background(PALETTE[1]);

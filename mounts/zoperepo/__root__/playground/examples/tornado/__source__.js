@@ -49,7 +49,7 @@ sketch = function(p) {
 
   p.setup = function() { 
     // for development considers removing SVG flag from next line
-    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT)
+    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT, p5_MODE)
     p.background('black')
     p.frameRate(FPS)
   }
@@ -66,8 +66,13 @@ sketch = function(p) {
 
     // early exit data check
     if (!data_chunk) {
-        index = 0
-        return
+        if (LIVEMODE) {
+            index = 0
+            cur_step = 0
+        } else {
+            p.noLoop()
+            return
+        }
     }
 
     // loop to create taz body from curve_map
@@ -111,13 +116,19 @@ sketch = function(p) {
     }
 
     // loop over DATA via index variable
-    if (index == DATA.length - 1) {
-        index = 0
+    if (index >= DATA.length - 1) {
+        if (LIVEMODE) {
+            index = 0
+            cur_step = 0
+        } else {
+            p.noLoop()
+            return
+        }
     } else {
-      // increment index for next run of draw() to create next frame
-      index = index + step_size
-      // ... also memorize real step count
-      cur_step++
+        // increment index for next run of draw() to create next frame
+        index = index + step_size
+        // ... also memorize real step count
+        cur_step++
     }
 
   }

@@ -1,8 +1,0 @@
-[
-    ('owner', (['acl_users'], 'dockerzope')),
-    ('props', [
-        [('id', 'content_type'), ('type', 'string'), ('value', 'text/javascript')],
-    ]),
-    ('title', 'r1b2 via websocket'),
-    ('type', 'File'),
-]

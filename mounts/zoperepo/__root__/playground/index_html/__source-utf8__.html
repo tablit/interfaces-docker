@@ -30,6 +30,7 @@
 
               <div class="navbar-nav dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-code"></i>
                     Examples
                 </a>
                 <ul id="examples_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
@@ -37,9 +38,6 @@
               </div>
 
               <div class="navbar-nav dropdown">
-              </div>
-
-              <div class="navbar-nav dropdown flex-grow-1">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     Import / Export
                 </a>
@@ -60,6 +58,9 @@
                         </a>
                     </li>
                     <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
                         <a id="download_png" class="dropdown-item disabled" href="#">
                             <i class="fa-solid fa-download"></i>
                             Download PNG
@@ -69,6 +70,36 @@
                         <a id="download_svg" class="dropdown-item disabled" href="#">
                             <i class="fa-solid fa-download"></i>
                             Download SVG
+                        </a>
+                    </li>
+                    <li>
+                        <div class="form-check form-switch">
+                            <input id="export_toggle" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                            <label class="form-check-label" for="flexSwitchCheckDefault">Export mode</label>
+                        </div>
+                    </li>
+                </ul>
+              </div>
+
+              <div class="navbar-nav dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-regular fa-lightbulb"></i>
+                    Help
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
+                    <li>
+                        <a id="show_bp_model" class="dropdown-item">
+                            Blazepose model
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="https://p5js.org/reference/" target="_blank">
+                            p5js reference
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item disabled" href="#">
+                            Javascript helper / variables
                         </a>
                     </li>
                 </ul>
@@ -82,10 +113,15 @@
 
     <main>
         <div class="container-fluid" id="mainContent">
+
+            <div id="export_alert" class="alert alert-warning alert-dismissible fade show d-none" role="alert">
+              <strong>Export mode activated:</strong> Slow SVG renderer activated. Rendering might take while, consider limiting frames used.
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <div class="row mb-1" id="mode_toolbar">
                 <div class="col-1">
                     <button id="mode_toggle_btn" type="button" class="btn btn-secondary w-100">
-                        DB Mode
+                        Live Mode
                     </button>
                 </div>
                 <div class="col-10" id="database_tools">
@@ -104,17 +140,12 @@
                 </div>
                 <div class="col-10 d-none" id="live_tools">
                     <div class="input-group">
-                        <button id="start_cam_btn" type="button" class="btn btn-secondary">
+                        <button id="start_cam_btn" type="button" class="btn btn-warning">
+                            <i class="fa-solid fa-camera"></i>
                             Start Camera
                         </button>
-                        <label class="input-group-text" for="model_chooser">Model</label>
-                        <select class="form-select" id="model_chooser">
-                            <option value="full">Full</option>
-                            <option value="lite" selected>Lite</option>
-                        </select>
-                        <label class="input-group-text" for="numposes">Number of poses</label>
-                        <input id="numposes" type="number" class="form-control" aria-label="ws_addr" value="1">
                         <button id="toggle_adv_live_btn" type="button" class="btn btn-secondary">
+                            <i class="fa-solid fa-gears"></i>
                             Advanced options
                         </button>
                     </div>
@@ -141,6 +172,13 @@
                         <input type="range" min="0" max="1" value="0.5" step="0.05" id="minPosePresenceConfidence" data-tour="step: 8; title: minPosePresenceConfidence [0..1]; content: The minimum confidence score of pose presence score in the pose landmark detection">
                         <label class="input-group-text" for="minTrackingConfidence">minTrackingConfidence</label>
                         <input type="range" min="0" max="1" value="0.5" step="0.05" id="minTrackingConfidence" data-tour="step: 9; title: minTrackingConfidence [0..1]; content: The minimum confidence score for the pose tracking to be considered successful">
+                        <label class="input-group-text" for="model_chooser">Model</label>
+                        <select class="form-select" id="model_chooser">
+                            <option value="full">Full</option>
+                            <option value="lite" selected>Lite</option>
+                        </select>
+                        <label class="input-group-text" for="numposes">Number of poses</label>
+                        <input id="numposes" type="number" class="form-control" aria-label="ws_addr" value="1">
                         <button class="btn btn-secondary" id="load_model" type="button" data-tour="step: 10; title: Load model; content: Load model to enable webcam scan.">
                             <i class="fa-solid fa-play"></i>
                             <span id="load_model_label">Reload Model</span>
@@ -189,6 +227,27 @@
       <div id="subFooter" class="container">
       </div>
     </footer>
+
+
+
+    <div class="modal fade" id="bp_info_modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog min-vw-100">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">BlazePose Model Diagram</h5>
+                </div>
+                <div class="modal-body">
+                    <img class="img-fluid mx-auto d-block" src="/lib/assets/img/bp_model.png" alt="BlazePose Joint diagram"></img>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
   </div>
 </p>

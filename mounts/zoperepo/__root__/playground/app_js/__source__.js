@@ -48,6 +48,13 @@ $(document).on("example-dropdown-load", function(event) {
 
 $(function() {
 
+    let bp_modal_el = document.querySelector('#bp_info_modal')
+    let bp_modal = bootstrap.Modal.getOrCreateInstance(bp_modal_el)
+
+    $("#show_bp_model").click(function(event) {
+        bp_modal.show()
+    })
+
     $.get(
         "choreo_dropdown_select_pt",
         function(data) {
@@ -101,6 +108,19 @@ $(function() {
             editor.setValue(import_code)
         }
         fileReader.readAsText(import_file)        
+    })
+    
+    $("#export_toggle").on("change", (event) => {
+        $("#download_png").toggleClass("disabled");
+        $("#download_svg").toggleClass("disabled");
+        $("#export_alert").toggleClass("d-none");
+        if ($("#export_toggle").is(':checked')) {
+            console.log("On");
+            p5_MODE = 'svg';
+        } else {
+            console.log("Off");
+            p5_MODE = 'p2d';
+        }
     })
 
     $("#download_png").click(downloadSVGAsPNG);

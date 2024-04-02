@@ -34,7 +34,7 @@ sketch = function(p) {
   var index = 0;
 
   p.setup = function() { 
-    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT)
+    p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT, p5_MODE)
     p.background('#212529')
     p.frameRate(FPS)
   }

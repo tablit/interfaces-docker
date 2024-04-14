@@ -3,6 +3,6 @@
     ('props', [
         [('id', 'content_type'), ('type', 'string'), ('value', 'text/javascript')],
     ]),
-    ('title', 'r1b2 example'),
+    ('title', 'r1b2'),
     ('type', 'File'),
 ]

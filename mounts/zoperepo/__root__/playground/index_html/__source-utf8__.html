@@ -1,13 +1,19 @@
 <p metal:use-macro="context/master_pt/macros/std_page">
   <div metal:fill-slot="std_body">
+    <link rel="stylesheet" href="/lib/css/github-dark.min.css">
+    <script src="/lib/js/highlight.min.js"></script>
+
     <script src="/lib/js/codemirror.js"></script>
     <link rel="stylesheet" href="/lib/css/codemirror.css">
+    <link rel="stylesheet" href="/lib/css/show-hint.css">
     <script src="/lib/js/javascript.js"></script>
+    <script src="/lib/js/show-hint.js"></script>
     <script src="/lib/js/vision_bundle_js"></script>
 
 	<script src="choreo_lib_js"></script>
 	<script src="examples_js"></script>
     <script src="app_js"></script>
+    <script src="/lib/js/javascript-hint.js"></script>
     <link rel="stylesheet" href="playground_css">
 
     <header>
@@ -88,7 +94,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDarkDropdownMenuLink">
                     <li>
-                        <a id="show_bp_model" class="dropdown-item">
+                        <a id="show_bp_model" class="dropdown-item" href="#">
                             Blazepose model
                         </a>
                     </li>
@@ -98,8 +104,13 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item disabled" href="#">
+                        <a id="show_js_info" class="dropdown-item" href="#">
                             Javascript helper / variables
+                        </a>
+                    </li>
+                    <li>
+                        <a id="show_manual" class="dropdown-item" href="#">
+                            Manual
                         </a>
                     </li>
                 </ul>
@@ -119,26 +130,25 @@
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <div class="row mb-1" id="mode_toolbar">
-                <div class="col-1">
+                <div class="col-md-1 col-sm-12 col-xs-12">
                     <button id="mode_toggle_btn" type="button" class="btn btn-secondary w-100">
                         Live Mode
                     </button>
                 </div>
-                <div class="col-10" id="database_tools">
-                    <a class="disabled dropdown-toggle btn btn-secondary w-50" id="records_dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="col-md-10 col-sm-12 col-xs-12" id="database_tools">
+                    <a class="disabled dropdown-toggle btn btn-secondary w-50 overflow-hidden" id="records_dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="badge bg-dark" id="selected_record"></span>
                     </a>
                     <ul id="choreo_dropdown" class="dropdown-menu dropdown-menu-dark" aria-labelledby="records_dropdown">
                     </ul>
-                    <button id="upload_json" type="button" class="btn btn-secondary disabled">
-                        Upload JSON
-                    </button>
-                    <button id="scan_video" type="button" class="btn btn-secondary disabled">
-                        Scan Video
-                    </button>
+
+                    <a class="btn btn-secondary" href="/choreo/index_html">
+                        <i class="fa-solid fa-database"></i>
+                        Database
+                    </a>
 
                 </div>
-                <div class="col-10 d-none" id="live_tools">
+                <div class="col-md-10 col-sm-12 col-xs-12 d-none" id="live_tools">
                     <div class="input-group">
                         <button id="start_cam_btn" type="button" class="btn btn-warning">
                             <i class="fa-solid fa-camera"></i>
@@ -175,6 +185,7 @@
                         <label class="input-group-text" for="model_chooser">Model</label>
                         <select class="form-select" id="model_chooser">
                             <option value="full">Full</option>
+                            <option value="heavy">Heavy</option>
                             <option value="lite" selected>Lite</option>
                         </select>
                         <label class="input-group-text" for="numposes">Number of poses</label>
@@ -185,7 +196,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="col-1">
+                <div class="col-md-1 col-sm-12 col-xs-12">
                     <button class="btn btn-success w-100 disabled" id="run_code" type="button">
                         <i class="fa-solid fa-play"></i>
                         <span id="run_label">Run code</span>
@@ -234,7 +245,7 @@
         <div class="modal-dialog min-vw-100">
             <div class="modal-content bg-dark">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">BlazePose Model Diagram</h5>
+                    <h1 class="modal-title" id="staticBackdropLabel">BlazePose Model Diagram</h1>
                 </div>
                 <div class="modal-body">
                     <img class="img-fluid mx-auto d-block" src="/lib/assets/img/bp_model.png" alt="BlazePose Joint diagram"></img>
@@ -246,7 +257,746 @@
         </div>
     </div>
 
+    <div class="modal fade" id="js_info_modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog min-vw-100">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="staticBackdropLabel">Javascript helper, constants and variables</h1>
+                </div>
+                <div class="modal-body">
+                    <pre><code tal:content="context/choreo_lib_js" class="language-javascript"></code></pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal fade" id="manual_modal" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog min-vw-100">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h1 class="modal-title" id="staticBackdropLabel">Manual</h1>
+                </div>
+                <div class="modal-body">
+                    <h3>Porting sketches</h3>
+                    <p>This chapter will describe how to port p5 sketches, e.g. from openprocessing, into the playground in order to use data from DB or Live mode for dance visualization/animation.</p>
+                    <p>Porting sketches means we copy/rewrite/rearrange source code so it can run in the playground environment.</p>
+                    <p>Our steps in general will be:</p>
+                    <p><ol>
+                        <li>Picking a sketch to be ported</li>
+                        <li>Create a copy of the original and rework it to run in playground</li>
+                        <li>Rewrite parts to use playground's motion data instead of user input/random/noise</li>
+                    </ol></p>
+                    <p>The example topic used for this guide will be good old flocking boids, with our movement data as a predator, so let's get some boids on the screen!</p>
+                    <h5>Step 1 - Picking a sketch</h5>
+                    <p>Take your time when picking a sketch. There are more criteria than "looks cool" which should be considered before we start.</p>
+                    <p>Luckily for us, the boids topic will provide more than enough examples for us to examine before we pick one.</p>
+                    <p>Take a look yourself:</p>
+                    <p><ol>
+                        <li><a href="https://openprocessing.org/sketch/126516" target="_blank">Flocking with predator</a></li>
+                        <li><a href="https://openprocessing.org/sketch/77181" target="_blank">Flocking</a></li>
+                        <li><a href="https://openprocessing.org/sketch/156164" target="_blank">Fish class: Flocking</a></li>
+                        <li><a href="https://openprocessing.org/sketch/2208826" target="_blank">Flock of glowing particles</a></li>
+                    </ol></p>
+                    <p>Surely there are many many more, but 4 code pieces are enough to pick from.</p>
+                    <p>Now we can collect some criteria to look for in our example:</p>
+                    <p><ul>
+                        <li>Coolness/Look - Yeah of course that's important</li>
+                        <li>Length of code - How many lines of trouble do we get? How many files involved?</li>
+                        <li>Shadow of code - Does the code look good, too? Useful comments? Indentation? Spaghetti code?</li>
+                    </ul></p>
+                    <p>Examining our examples i came to the following result:</p>
+                    <p><ol>
+                        <li><b>Flocking with predator: </b>Looks nice, has predators. Nearly 400 lines of code, which is strongly typed. Code itself looks good and readable.</li>
+                        <li><b>Flocking: </b>This is basically the processing tutorial flocking example without predator. Code is quite short, but we could start off from tutorial example ourselves. Dismissed.</li>
+                        <li><b>Fish class: Flocking: </b>Also looks nice, has preadtors. Nearly 700 lines of code, which is strongly typed. Code itself is structured and readable.</li>
+                        <li><b>Flock of glowing particles: </b>Glowing particles! Nice! Quite short, not even 300 lines, but no predator yet. Code is nice and would allow predator addition.</li>
+                    </ol></p>
+                    <p>The term "strongly typed" means that the code mentioned is most probably TypeScript, which is basically a JavaScript flavour, but requires us to rewrite a lot of passages.</p>
+                    <p>All examples picked use <a href="https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Objects/Object-oriented_programming">OOP</a> ( object oriented programming ) to create boids in form of objects, which are then updated in each frame.</p>
+                    <p>After reading the remaining examples in more detail, i picked the fourth one - <b>Flock of glowing particles</b> - for the following reasons:</p>
+                    <p><ul>
+                        <li>Shortest piece of code. Still structured. No TypeScript, therefore easier rewrite.</li>
+                        <li>The missing part - predator from movement data - has an obvious place to live in the code.</li>
+                        <li>Compared to the other two examples this one seems to create the least work. It nearly has everything we need, requires the least rewriting and is not too longish.</li>
+                    </ul></p>
+                    <p>So now that we've picked a sketch to port, we can start step 2. If we encounter massive problems, we can of course return to step 1 and pick another sketch.</p>
+                    <h5>Step 2 - Reworking the sketch</h5>
+                    <p>A basic skeleton sketch in the playground looks like this:</p>
+                    <pre><code class="language-javascript">
+// be nice and mention the original here!
+
+// define global variables here, use "var"
+
+sketch = function(p) {
+
+    // define sketch specific stuff ( using "p" here )
+
+    p.setup = function() {
+        // fill setup function, create canvas, set FPS and stuff here
+    }
+
+    p.draw = function() {
+        // main drawing loop called for each frame
+    }
+
+}
+
+stage = new p5(sketch, 'p5_stage')
+                    </code></pre>
+                    <p>Our goal in this step will be to fill the "slots" commented in skeleton above with the sketch code picked in step 1.</p>
+                    <p>A good start is to find and port setup() and draw().</p>
+                    <p>After porting these two base functions our code now looks like this:</p>
+                    <pre><code class="language-javascript">
+// https://openprocessing.org/sketch/2208826 by 李秋霖
+
+sketch = function(p) {
+
+    // define sketch specific stuff ( using "p" here )
+
+    p.setup = function() {
+        p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT);  // switch from magic numbers to playground constants
+        p.blendMode(p.ADD);
+        p.imageMode(p.CENTER);
+        p.frameRate(FPS);
+        p.background(0);
+
+        // let's check these guys next!
+        setSlider();
+        getSliderValue();
+    }
+
+    p.draw = function() {
+        p.clear();
+        p.background(0);
+        
+        // these are interesting, too!
+        getSliderValue();
+        infoDisplay();
+        flock.run();
+    }
+
+}
+
+stage = new p5(sketch, 'p5_stage')
+                    </code></pre>
+                    <p>We have already made some changes to the original:</p>
+                    <p><ul>
+                        <li>Note both original openprocessing URL and author.</li>
+                        <li>Add "p." to p5js native calls as we're inside a p5js instance in the playground. Will probably miss some. Will find out later.</li>
+                        <li>Replace some magic numbers with constants from playground, such as "SCENE_WIDTH", "SCENE_HEIGHT" and "FPS".</li>
+                        <li>Mark probably custom written function calls as they give a good clue on what comes next.</li>
+                    </ul></p>
+                    <p>Now we can continue by examining custom functions found, start with these:</p>
+                    <pre><code class="language-javascript">
+        // ...
+        // let's check these guys next!
+        setSlider();
+        getSliderValue();
+        // ...
+                    </code></pre>
+                    <p>In the original they're used to control some flocking settings. We don't need a GUI for this, we can use static settings and even manipulate these later via movement data!?</p>
+                    <p>We can instead introduce three global variables and continue with those values from there.</p>
+                    <pre><code class="language-javascript">
+// flocking settings
+var Pa = 1;  // alignment
+var Pc = 1;  // cohesion
+var Ps = 1;  // separation
+                    </code></pre>
+                    <p>Creating global variables from such settings is good enough for now, later it is easy to fizzle around with those in playground.</p>
+                    <p>Now that we've dealt with the sliders ( we don't need them ), we continue with the next call found:</p>
+                    <pre><code class="language-javascript">
+        // ...
+        // these are interesting, too!
+        getSliderValue();  // done, can be removed! No sliders in the playground for now.
+        infoDisplay();     // info display is next, will probably introduce more variables?
+        flock.run();       // this seems to be the main call, we'll port after checking infoDisplay()
+        // ...
+                    </code></pre>
+                    <p>OK, "infoDisplay()" simply adds info texts to the corners of the screen, so we can simple skip it as we don't want to clutter the stage with text.</p>
+                    <p>"flock.run()" is the next call of interest, behind it we'll find the main code of this example sketch. Let's examine this part closer!</p>
+                    <p>As mentioned above these examples are structured using OOP ( go ahead, read the guide! ), in this case we find two classes, "Boid" and "Boids".</p>
+                    <p>"Boid" represents one specific boid, while "Boids" is just a container controlling an array of "Boid" instances.</p>
+                    <p>We will port ( aka copy&paste ) both classes into our sketch specific slot, as we expect them to use p5js native calls we'll rewrite using our namespace "p.".</p>
+                    <p>... which is the most work intensive part to be done here. Remember to initialize to "Boids" container as "flock", so the "flock.run" call can do its magic.</p>
+                    <p>Do not expect your code to work on the first try from now on. Use the browser dev tools to find and fix your mistakes.</p>
+                    <p>The full example code to this point, let's try running it next:</p>
+                    <pre><code class="language-javascript">
+// https://openprocessing.org/sketch/2208826 by 李秋霖
+// "The Nature of Code" authored by D. Shiffman has been referred for the
+// coding of the flocking part.
+
+// flocking settings
+var Pa = 1;  // alignment
+var Pc = 1;  // cohesion
+var Ps = 1;  // separation
+
+
+sketch = function(p) {
+
+    class Boid {
+        constructor(x, y) {
+            this.pos = p.createVector(x, y);
+            this.vel = p.createVector(p.random(-5, 5), p.random(-5, 5));
+            this.acc = p.createVector(0, 0);
+            this.maxforce = 0.05;
+            this.maxspeed = 5;
+            this.alignRange = p.random(0, 100);
+            this.separateRange = p.random(0, 100);
+            this.cohesiveRange = p.random(0, 100);
+            this.img;
+        }
+
+        update() {
+            this.vel.add(this.acc);
+            this.vel.limit(this.maxspeed);
+            this.pos.add(this.vel);
+            this.acc.mult(0);
+        }
+
+        display() {
+            p.image(this.img, this.pos.x, this.pos.y);
+        }
+        
+        wallThrough() {
+            if (this.pos.x > width) {
+                this.pos.x = 0;
+            }
+            if (this.pos.x < 0) {
+                this.pos.x = width;
+            }
+            if (this.pos.y > height) {
+                this.pos.y = 0;
+            }
+            if (this.pos.y < 0) {
+                this.pos.y = height;
+            }
+        }
+
+        createParticleImage() {
+        
+            let side = 200;
+            let center = side / 2;
+            
+            this.img = p.createImage(side, side);
+            
+            let num = p.pow(10, 1.8);
+    
+            let Cr = p.map(this.alignRange, 0, 100, 100, 255);
+            let Cg = p.map(this.cohesiveRange, 0, 100, 100, 255);
+            let Cb = p.map(this.separateRange, 0, 100, 100, 255);
+            
+            this.img.loadPixels();
+            for (let y = 0; y < side; y++) {
+                for (let x = 0; x < side; x++) {
+                    let d = (p.sq(center - x) + p.sq(center - y))/num;
+                    let col = p.color(Cr/d, Cg/d, Cb/d);
+                    this.img.set(x, y, col);
+                }
+            }
+            this.img.updatePixels();
+            return this.img;
+        }
+        
+        applyForce(force) {
+            this.acc.add(force);
+        }
+        
+        align(boids) {
+            //let alignRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.alignRange) {
+                    sum.add(other.vel);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        separate(boids) {
+            //let separateRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.separateRange) {
+                    let diff = p5.Vector.sub(this.pos, other.pos);
+                    diff.normalize();
+                    diff.div(d);
+                    sum.add(diff);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        cohesive(boids) {
+            //let cohesionRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.cohesiveRange) {
+                    sum.add(other.pos);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.sub(this.pos)
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        flocking(boids) {
+            let sep = this.separate(boids);
+            let ali = this.align(boids);
+            let coh = this.cohesive(boids);
+            
+            sep.mult(Ps);
+            ali.mult(Pa);
+            coh.mult(Pc);
+            
+            this.applyForce(sep);
+            this.applyForce(ali);
+            this.applyForce(coh);
+        }
+    }
+    
+    class Boids {
+        constructor() {
+            this.boids = [];
+        }
+
+        run() {
+            if (this.boids.length > 0) {
+                for (let boid of this.boids) {
+                    boid.flocking(this.boids);
+                    boid.update();
+                    boid.wallThrough();
+                    boid.display();
+                }
+            }
+        }
+
+        addBoid(x, y) {
+            this.boids.push(new Boid(x, y));
+            this.boids[this.boids.length - 1].createParticleImage();
+        }
+
+        reset() {
+            this.boids = [];
+        }
+    }
+
+    let flock = new Boids();
+
+    p.setup = function() {
+        p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT);
+        p.blendMode(p.ADD);
+        p.imageMode(p.CENTER);
+        p.frameRate(FPS);
+        p.background(0);
+    }
+
+    p.draw = function() {
+        p.clear();
+        p.background(0);
+        flock.run();
+    }
+
+}
+
+stage = new p5(sketch, 'p5_stage')
+                    </code></pre>
+                    <p>Wow, no errors so far, just a blank black screen, which is fine. Let's add some boids!</p>
+                    <pre><code class="language-javascript">
+    p.setup = function() {
+        p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT);
+        p.blendMode(p.ADD);
+        p.imageMode(p.CENTER);
+        p.frameRate(FPS);
+        p.background(0);
+        // add 100 boids on random coordinates inside of the scene
+        for (let i = 0; i < 100; i++) {
+            flock.addBoid(
+                p.random(0, SCENE_WIDTH),
+                p.random(0, SCENE_HEIGHT)
+            );
+        }
+    }
+                    </code></pre>
+                    <p>Error, finally! "wallThrough" function calls unknown stuff ( aka width and height ), missed that while adding "p." namespace obviously. Fixing ...</p>
+                    <p>Well, that was the only error? Nice! Now we have a fully working base flocking example to work with in step 3! Full code:</p>
+                    <pre><code class="language-javascript">
+// https://openprocessing.org/sketch/2208826 by 李秋霖
+// "The Nature of Code" authored by D. Shiffman has been referred for the
+// coding of the flocking part.
+
+// flocking settings
+var Pa = 1;  // alignment
+var Pc = 1;  // cohesion
+var Ps = 1;  // separation
+
+
+sketch = function(p) {
+
+    class Boid {
+        constructor(x, y) {
+            this.pos = p.createVector(x, y);
+            this.vel = p.createVector(p.random(-5, 5), p.random(-5, 5));
+            this.acc = p.createVector(0, 0);
+            this.maxforce = 0.05;
+            this.maxspeed = 5;
+            this.alignRange = p.random(0, 100);
+            this.separateRange = p.random(0, 100);
+            this.cohesiveRange = p.random(0, 100);
+            this.img;
+        }
+
+        update() {
+            this.vel.add(this.acc);
+            this.vel.limit(this.maxspeed);
+            this.pos.add(this.vel);
+            this.acc.mult(0);
+        }
+
+        display() {
+            p.image(this.img, this.pos.x, this.pos.y);
+        }
+        
+        wallThrough() {
+            if (this.pos.x > p.width) {
+                this.pos.x = 0;
+            }
+            if (this.pos.x < 0) {
+                this.pos.x = p.width;
+            }
+            if (this.pos.y > p.height) {
+                this.pos.y = 0;
+            }
+            if (this.pos.y < 0) {
+                this.pos.y = p.height;
+            }
+        }
+
+        createParticleImage() {
+        
+            let side = 200;
+            let center = side / 2;
+            
+            this.img = p.createImage(side, side);
+            
+            let num = p.pow(10, 1.8);
+    
+            let Cr = p.map(this.alignRange, 0, 100, 100, 255);
+            let Cg = p.map(this.cohesiveRange, 0, 100, 100, 255);
+            let Cb = p.map(this.separateRange, 0, 100, 100, 255);
+            
+            this.img.loadPixels();
+            for (let y = 0; y < side; y++) {
+                for (let x = 0; x < side; x++) {
+                    let d = (p.sq(center - x) + p.sq(center - y))/num;
+                    let col = p.color(Cr/d, Cg/d, Cb/d);
+                    this.img.set(x, y, col);
+                }
+            }
+            this.img.updatePixels();
+            return this.img;
+        }
+        
+        applyForce(force) {
+            this.acc.add(force);
+        }
+        
+        align(boids) {
+            //let alignRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.alignRange) {
+                    sum.add(other.vel);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        separate(boids) {
+            //let separateRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.separateRange) {
+                    let diff = p5.Vector.sub(this.pos, other.pos);
+                    diff.normalize();
+                    diff.div(d);
+                    sum.add(diff);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        cohesive(boids) {
+            //let cohesionRange = 50;
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of boids) {
+                let d = p5.Vector.dist(this.pos, other.pos);
+                if (d > 0 && d < this.cohesiveRange) {
+                    sum.add(other.pos);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.sub(this.pos)
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }
+        }
+        
+        flocking(boids) {
+            let sep = this.separate(boids);
+            let ali = this.align(boids);
+            let coh = this.cohesive(boids);
+            
+            sep.mult(Ps);
+            ali.mult(Pa);
+            coh.mult(Pc);
+            
+            this.applyForce(sep);
+            this.applyForce(ali);
+            this.applyForce(coh);
+        }
+    }
+    
+    class Boids {
+        constructor() {
+            this.boids = [];
+        }
+
+        run() {
+            if (this.boids.length > 0) {
+                for (let boid of this.boids) {
+                    boid.flocking(this.boids);
+                    boid.update();
+                    boid.wallThrough();
+                    boid.display();
+                }
+            }
+        }
+
+        addBoid(x, y) {
+            this.boids.push(new Boid(x, y));
+            this.boids[this.boids.length - 1].createParticleImage();
+        }
+
+        reset() {
+            this.boids = [];
+        }
+    }
+
+    let flock = new Boids();
+
+    p.setup = function() {
+        p.createCanvas(SCENE_WIDTH, SCENE_HEIGHT);
+        p.blendMode(p.ADD);
+        p.imageMode(p.CENTER);
+        p.frameRate(FPS);
+        p.background(0);
+        // add 100 boids on random coordinates inside of the scene
+		for (let i = 0; i < 100; i++) {
+			flock.addBoid(
+			    p.random(0, SCENE_WIDTH),
+			    p.random(0, SCENE_HEIGHT)
+			);
+		}
+    }
+
+    p.draw = function() {
+        p.clear();
+        p.background(0);
+        flock.run();
+    }
+
+}
+
+stage = new p5(sketch, 'p5_stage')
+                    </code></pre>
+                    <h5>Step 3 - Adding DATA to the sketch</h5>
+                    <p>Now that we have a working boids example, let's add our movement data provided by the playground.</p>
+                    <p>Our strategy will be the following:</p>
+                    <p><ol>
+                        <li>Inject playground global DATA into flock.run() via p.draw(). Consider both DB- and Live mode.</li>
+                        <li>As our movement data represent another kind of separating force ( predator ), create a new method consuming joints to create a new separating force.</li>
+                        <li>Make sure the new force is applied similar to the three existing ones.</li>
+                        <li>Test and adjust. There will be mistakes, e.g. remember to multiply joint coordinates with SCENE_-globals for real coordinates.</li>
+                    </ol></p>
+                    <p>First step, inject DATA ( doing nothing right now! ), now "p.draw()" looks like this:</p>
+                    <pre><code class="language-javascript">
+    p.draw = function() {
+        p.clear();
+        p.background(0);
+
+        let data_chunk = DATA[index];
+
+        // early exit data check
+        if (!data_chunk) {
+            index = 0
+            return
+        }
+
+        if(!LIVEMODE) {
+            flock.run([data_chunk]);
+            if (index == DATA.length - 1) {
+                index = 0
+            } else {
+                index++
+            }
+        } else {
+            flock.run(DATA);
+        }
+
+    }
+                    </code></pre>
+                    <p>Note that we pass an array in both cases: In Live Mode "DATA" already is an array of poses ( for the current frame ), in case of DB Mode we use our index to pass one chunk ( frame ) of DATA, wrapped as array to treat both cases the same from here on.</p>
+                    <p>Step 2, now we can create a new method consuming our joints to create a separating force.</p>
+                    <p>Let's follow our data into the rabbit hole, first stop is "flock.run()":</p>
+                    <pre><code class="language-javascript">
+        // passing our data here as "poses" ...
+        run(poses) {
+            if (this.boids.length > 0) {
+                for (let boid of this.boids) {
+                    boid.flocking(this.boids, poses); // ... into the flocking method
+                    boid.update();
+                    boid.wallThrough();
+                    boid.display();
+                }
+            }
+        }
+                    </code></pre>
+                    <p>Next stop: "boid.flocking()", doing step 3 on the fly:</p>
+                    <pre><code class="language-javascript">
+        flocking(boids, poses) {
+            let sep = this.separate(boids);
+            let ali = this.align(boids);
+            let coh = this.cohesive(boids);
+            sep.mult(Ps);
+            ali.mult(Pa);
+            coh.mult(Pc);
+            this.applyForce(sep);
+            this.applyForce(ali);
+            this.applyForce(coh);
+            // new part: consume poses, call new method and apply resulting force
+            for (let pose of poses) {
+                let sepj = this.separate_joints(pose);  // one pose is an array of joints!
+                sepj.mult(Pj);
+                this.applyForce(sepj)
+            }
+        }
+                    </code></pre>
+                    <p>...and our new method as planned, very similar to original "separate" but using joint positions instead:</p>
+                    <pre><code class="language-javascript">
+        separate_joints(joints) {
+            let sum = p.createVector(0, 0);
+            let count = 0;
+            for (let other of joints) {
+                let joint_pos = p.createVector(  // new part: use joints, not other boids
+                    other.x * SCENE_WIDTH,       // remember to multiply!
+                    other.y * SCENE_HEIGHT
+                )
+                let d = p5.Vector.dist(this.pos, joint_pos);
+                if (d > 0 && d < this.jointsRange) {  // also introduced new setting "jointsRange"
+                    let diff = p5.Vector.sub(this.pos, joint_pos);
+                    diff.normalize();
+                    diff.div(d);
+                    sum.add(diff);
+                    count++;
+                }
+            }
+            if (count > 0) {
+                sum.div(count);
+                sum.normalize();
+                sum.mult(this.maxspeed);
+                let steer = p5.Vector.sub(sum, this.vel);
+                steer.limit(this.maxforce);
+                return steer;
+            } else {
+                return p.createVector(0, 0);
+            }            
+        }
+                    </code></pre>
+                    <p>Works, both in DB- and in Live Mode. Wow, that was easy. Full code can be found in examples, feel free to tinker with it as you like!</p>
+                    <p>Some suggestions for further tinkering:</p>
+                    <p><ul>
+                        <li>Motion data aka predator is not visualized. Maybe you want to?</li>
+                        <li>Boid creation seems expensive and takes a while. Examine why, then improve?</li>
+                        <li>Instead of creating a predator from movement data, you could consider altering the flocking behaviour itself with it. Special poses, e.g. raised hands, could trigger changes!?</li>
+                        <li>Remember to have fun!</li>
+                    </ul></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
   </div>

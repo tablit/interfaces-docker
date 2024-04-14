@@ -3,7 +3,6 @@ let example_dropdown_template;
 let editor;
 let oScript;
 let oScriptText;
-let DATA;
 let DB_DATA;
 let sketch;
 let stage;
@@ -26,14 +25,19 @@ let broadcast_running = false;
 
 let websocket;
 let websocket_opened = false;
-let LIVEMODE = false;
+
+let params = new URLSearchParams(document.location.search);
+
 
 $(document).on("choreo-dropdown-load", function(event) {
     $.getJSON("choreo/fetch", function(data) {
         let dropdown_html = choreo_dropdown_template(data);
         $("#choreo_dropdown").html(dropdown_html);
         $("#records_dropdown").toggleClass('disabled');
-        if (data.choreos.length) {
+        let chroeo_id = params.get("choreo_id");
+        if (chroeo_id) {
+            load_data(chroeo_id);
+        } else if (data.choreos.length) {
             load_data(data.choreos[0].choreo_id);
         }
     })
@@ -50,10 +54,24 @@ $(function() {
 
     let bp_modal_el = document.querySelector('#bp_info_modal')
     let bp_modal = bootstrap.Modal.getOrCreateInstance(bp_modal_el)
+    let js_modal_el = document.querySelector('#js_info_modal')
+    let js_modal = bootstrap.Modal.getOrCreateInstance(js_modal_el)
+    let manual_modal_el = document.querySelector('#manual_modal')
+    let manual_modal = bootstrap.Modal.getOrCreateInstance(manual_modal_el)
 
     $("#show_bp_model").click(function(event) {
         bp_modal.show()
     })
+
+    $("#show_js_info").click(function(event) {
+        js_modal.show()
+    })
+
+    $("#show_manual").click(function(event) {
+        manual_modal.show()
+    })
+
+    hljs.highlightAll();
 
     $.get(
         "choreo_dropdown_select_pt",
@@ -71,18 +89,26 @@ $(function() {
         }
     )
 
+    example_id = params.get("example_id");
     editor = CodeMirror(
         $("#editor")[0],
         {
-            value: EXAMPLES["stickman"],
+            value: example_id ? EXAMPLES[example_id] : EXAMPLES["stickman"],
             mode:  "javascript",
             lineNumbers: true,
+            extraKeys: {"Ctrl-Space": "autocomplete"},
+            indentUnit: 4,
         }
     )
     editor.setOption("theme", "material");
+    editor.setOption("hintOptions", {
+        completeOnSingleClick: false,
+        closeOnUnfocus: false,
+        additionalContext: {p: p5.prototype},
+        useGlobalScope: true,
+    })
 
     $("#run_code").click(runCode);
-
     $("#mode_toggle_btn").click(toggle_mode);
     $("#toggle_adv_live_btn").click(toggle_adv_live);
     $("#broadcast_scan").click(start_broadcast);
@@ -115,10 +141,8 @@ $(function() {
         $("#download_svg").toggleClass("disabled");
         $("#export_alert").toggleClass("d-none");
         if ($("#export_toggle").is(':checked')) {
-            console.log("On");
             p5_MODE = 'svg';
         } else {
-            console.log("Off");
             p5_MODE = 'p2d';
         }
     })
@@ -139,6 +163,14 @@ $(function() {
     canvasElement = document.getElementById("output_canvas");
     canvasCtx = canvasElement.getContext("2d");
     drawingUtils = new DrawingUtils_1(canvasCtx);
+    $("#load_model").click((event) => {
+        webcamRunning = false;
+        broadcast_running = false;
+        $("#start_scan_btn").toggleClass("disabled");
+        $("#bc_not_running").show();
+        $("#bc_running").hide();
+        createPoseLandmarker();
+    })
 
     createPoseLandmarker();
 })
@@ -182,6 +214,7 @@ function toggle_mode(event) {
 
     if (LIVEMODE) {
         btn.text('DB Mode');
+        DATA = [];
     } else {
         btn.text('Live Mode');
         DATA = DB_DATA;
@@ -218,12 +251,11 @@ function load_data(choreo_id) {
 
 const createPoseLandmarker = async () => {
 
-    /*
+    let num_poses = 1;
+
     if ($("#numposes").val()) {
         num_poses = $("#numposes").val()
     }
-    */
-    let num_poses = 1;
     const vision = await FilesetResolver_1.forVisionTasks(
         "/lib/wasm"
     );
@@ -243,7 +275,7 @@ const createPoseLandmarker = async () => {
     });
 
     console.log("poseLandmarker initialized!");
-    //$("#start_scan").prop("disabled", false);
+    $("#start_scan_btn").toggleClass("disabled");
 
 };
 
@@ -256,7 +288,7 @@ function enableCam(event) {
     }
 
     videoWidth = "640px";
-    videoHeight = "480px";
+    videoHeight = "360px";
 
     if (webcamRunning === true) {
         webcamRunning = false;

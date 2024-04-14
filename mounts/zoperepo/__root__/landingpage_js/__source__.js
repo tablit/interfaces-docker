@@ -79,10 +79,10 @@ function create_sketch(data) {
                 }
 
                 // make sure to multiply normalized coordinates to get correct coordinates p.windowWidth, p.windowHeight
-                let x1 = first_point.x * p.windowWidth
-                let x2 = second_point.x * p.windowWidth
-                let y1 = first_point.y * p.windowHeight
-                let y2 = second_point.y * p.windowHeight
+                let x1 = first_point.x * p.windowWidth * 2 - ( p.windowWidth / 2 )
+                let x2 = second_point.x * p.windowWidth * 2 - ( p.windowWidth / 2 )
+                let y1 = first_point.y * p.windowHeight * 2 - ( p.windowHeight / 2 )
+                let y2 = second_point.y * p.windowHeight * 2 - ( p.windowHeight / 2 )
                 p.stroke('white')
                 p.line(x1, y1, x2, y2)
 

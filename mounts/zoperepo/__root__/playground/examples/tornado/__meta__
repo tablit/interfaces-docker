@@ -3,6 +3,6 @@
     ('props', [
         [('id', 'content_type'), ('type', 'string'), ('value', 'text/javascript')],
     ]),
-    ('title', 'Tornado visual example'),
+    ('title', 'Tornado visual'),
     ('type', 'File'),
 ]

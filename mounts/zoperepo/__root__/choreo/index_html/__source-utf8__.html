@@ -1,25 +1,40 @@
 <p metal:use-macro="context/master_pt/macros/std_page">
     <div metal:fill-slot="std_body">
         <script src="custom_js"></script>
-        <h1>Interfaces DB</h1>
 
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="../index_html">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Choreo</li>
-          </ol>
-        </nav>
+        <header>
+    
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+              <div class="container-fluid">
+            
+                <a class="navbar-brand" href="/index_html">
+                  <img src="lib/assets/img/logo" width="50px" height="50px" class="d-inline-block align-text-top"></img>
+                </a>
+            
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                  <div class="navbar-nav">
+                    <a class="nav-link active fs-1" aria-current="page" href="#">Interfaces DB</a>
+                  </div>
+                </div>
+              </div>
+            </nav>
+    
+        </header>
 
         <div class="d-grid gap-2 d-md-block">
             <button type="button" class="btn btn-success" onclick="start_tut(event)">
                 <i class="fa-solid fa-graduation-cap"></i>
                 Tutorial
             </button>
-            <button class="btn btn-primary" id="start_upload" type="button" data-tour="step: 2; title: Upload JSON file; content: Open dialogue to upload prepared JSON files. This can be useful when migrating data between Interfaces instances">
+            <a class="btn btn-secondary" href="/playground/index_html">Playground</a>
+            <button class="btn btn-secondary" id="start_upload" type="button" data-tour="step: 2; title: Upload JSON file; content: Open dialogue to upload prepared JSON files. This can be useful when migrating data between Interfaces instances">
                 <i class="fa-solid fa-file-import"></i>
                 Upload JSON file
             </button>
-            <button class="btn btn-primary" id="start_video_upload" type="button" data-tour="step: 3; title: Server side video processing; content: Upload a video file ( mp4 ) and call server side scanner on it. Make sure to read dialogue infos and best practices to avoid wasting time on broken scans">
+            <button class="btn btn-secondary" id="start_video_upload" type="button" data-tour="step: 3; title: Server side video processing; content: Upload a video file ( mp4 ) and call server side scanner on it. Make sure to read dialogue infos and best practices to avoid wasting time on broken scans">
                 <i class="fa-solid fa-file-import"></i>
                 Upload video file
             </button>

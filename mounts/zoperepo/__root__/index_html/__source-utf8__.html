@@ -1,37 +1,70 @@
 <p metal:use-macro="context/master_pt/macros/std_page">
   <div data-tour="step: 1; title: Welcome!; content: Welcome to Interfaces Webapp!" metal:fill-slot="std_body">
-    <h1>Interfaces</h1>
 
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item active" aria-current="page">Home</li>
-      </ol>
-    </nav>
+    <script src="landingpage_js"></script>
 
-    <button type="button" class="btn btn-success" onclick="start_tut(event)">
-        <i class="fa-solid fa-graduation-cap"></i>
-        Start Tour
-    </button>
+    <header>
 
-    <a href="tf_live_demo/index_html" class="btn btn-primary" data-tour="step: 2; title: TensorflowJS live processing; content: Record motion capturing data directly and live via Webcam">
-        Tensorflow-JS local live processing
-    </a>
-    <a href="tf_upload_demo/index_html" class="btn btn-primary" data-tour="step: 3; title: TensorflowJS local video processing; content: Process videos locally in browser without video upload">
-        Tensorflow-JS local video processing
-    </a>
-    <a href="choreo/index_html" class="btn btn-primary" data-tour="step: 4; title: Choreo database; content: Access database functions and server side video processing here">
-        Database
-    </a>
-    <a href="p5_playground/index_html" class="btn btn-primary" data-tour="step: 6; title: p5js playground; content: Run a p5 sketch against records from database">
-        p5js playground
-    </a>
-    <a href="mp_live_scan/index_html" class="btn btn-primary" data-tour="step: 7; title: mediapipe live scan; content: Live scan from webcam input via mediapipe JS pipeline">
-        MediaPipe live scan
-    </a>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark p-0">
+          <div class="container-fluid">
+        
+            <a class="navbar-brand" href="/index_html">
+              <img src="lib/assets/img/logo" width="50px" height="50px" class="d-inline-block align-text-top"></img>
+            </a>
+        
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link active fs-1" aria-current="page" href="#">Interfaces</a>
+              </div>
+            </div>
+          </div>
+        </nav>
 
-    <a href="mediapipe_upload/index_html" class="btn btn-primary" data-tour="step: 8; title: MediaPipe upload scan; content: Upload video for server sided scan">
-        MediaPipe upload scan
-    </a>
+    </header>
+
+    <main>
+        <!-- Masthead -->
+        <section class="container-fluid">
+          <div id="masthead" class="container"></div>
+        </section>
+        <!-- Primary Content Area -->
+        <section id="mainContent" class="container-fluid">
+          <div class="container">
+            <div class="row">
+              <!-- Sidebar -->
+              <aside id="sidebar" class="col-md-3 order-2"></aside>
+              <!-- article/content -->
+              <article id="content" class="col-md-9 order-1">
+
+                <p>“Interfaces” is the bridge between dance and computer art. We capture the dynamics and expression of dance and transport them into the world of code generated art.</p>
+                <p>“Interfaces” wants to trigger, push and moderate a dialog between generative artists and choreographers.</p>
+                <p>"Interfaces" is a data and knowledge base loaded with data from choreographies, workflow documentation, sample code, converters, scanners and other open source tools that aim to help creators to run their respective part of collaborations between dance and code art.</p>
+                <p>Be part of “Interfaces” by either providing Your movements as a scan on our servers, or by creating generative art using the json files with the movement data from choreographers in Your code.</p>
+                <p>"Interfaces" is about sharing and remixing. We respect the idea of open source and fair share. So tag the creators of the content You're using and share the profits - fame, coins or just the fun.</p>
+
+                <a href="playground/index_html" class="btn btn-success w-100">
+                    Start Playground
+                </a>
+
+              </article>
+
+            </div>
+          </div>
+        </section>
+    </main>
+
+    <footer class="container-fluid">
+      <!-- footer menu area -->
+      <div id="footerPrimary" class="container">
+      </div>
+      <!-- subfooter menu area -->
+      <div id="subFooter" class="container">
+      </div>
+    </footer>
+
 
   </div>
 </p>

@@ -2,7 +2,7 @@ import {
   PoseLandmarker,
   FilesetResolver,
   DrawingUtils
-} from "/lib/js/vision_bundle_js";
+} from "/lib/js/vision_bundle_js_exports";
 
 let poseLandmarker;
 let runningMode = "VIDEO";

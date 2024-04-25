@@ -1,0 +1,7 @@
+{{#each choreos}}
+<li>
+    <a class="dropdown-item" data-choreo-id="{{this.choreo_id}}" onclick="select_choreo(event)">
+        {{this.choreo_name}}
+    </a>
+</li>
+{{/each}}

@@ -109,6 +109,7 @@ $(function() {
     })
 
     $("#run_code").click(runCode);
+    $("#run_fullscreen").click(run_fullscreen);
     $("#mode_toggle_btn").click(toggle_mode);
     $("#toggle_adv_live_btn").click(toggle_adv_live);
     $("#broadcast_scan").click(start_broadcast);
@@ -235,6 +236,7 @@ function data_loaded(data) {
     $(`a.dropdown-item[data-choreo-id="${data.choreo_id}"]`).toggleClass('active');
     $("#data_loading").hide();
     $("#run_code").toggleClass('disabled');
+    $("#run_fullscreen").toggleClass('disabled');
     $("#selected_record").html(`${data.choreo_name} by ${data.choreo_author}`);
     console.log("Record loaded!");
 }
@@ -459,4 +461,14 @@ function downloadSVGAsPNG(e){
           a.dispatchEvent(my_evt);
         }
     }  
+}
+
+function run_fullscreen(event) {
+    SCENE_WIDTH = $(document).width();
+    SCENE_HEIGHT = $(document).height();
+    $("body").hide();
+    runCode();
+    $("canvas").prependTo("html");
+    $("#output_canvas").hide();
+    $("html").css("background-color", "#212529");
 }

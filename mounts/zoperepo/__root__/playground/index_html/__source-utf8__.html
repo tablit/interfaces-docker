@@ -1,5 +1,10 @@
 <p metal:use-macro="context/master_pt/macros/std_page">
-  <div metal:fill-slot="std_body">
+  <div id="main_app" metal:fill-slot="std_body">
+
+    <script src="/lib/js/fluid.js"></script>
+    <script src="/lib/js/gpu-io.min.js"></script>
+    <script src="/lib/js/canvas-capture.min.js"></script>
+
     <link rel="stylesheet" href="/lib/css/github-dark.min.css">
     <script src="/lib/js/highlight.min.js"></script>
 
@@ -197,7 +202,7 @@
                     </div>
                 </div>
                 <div class="col-md-1 col-sm-12 col-xs-12">
-                    <button class="btn btn-success w-100 disabled" id="run_code" type="button">
+                    <button class="btn btn-success disabled w-100" id="run_code" type="button">
                         <i class="fa-solid fa-play"></i>
                         <span id="run_label">Run code</span>
                         <span id="data_loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -209,12 +214,13 @@
                 <div class="col" id="visuals_stage">
                     <div class="row justify-content-center">
                         <div id="p5_stage">
-                            <span>p5 stage</span>
                         </div>
                     </div>
+                    <button class="btn btn-secondary disabled" id="run_fullscreen" type="button">
+                        <i class="fa-solid fa-expand"></i>
+                    </button>
                     <div class="row justify-content-center">
                         <div id="webcam_stage">
-                            <span>Webcam stage</span>
                             <div style="position: relative;">
                                 <video id="webcam" style="width: 640px; height: 480px;" autoplay playsinline></video>
                                 <canvas class="output_canvas" id="output_canvas" width="640" height="480" style="position: absolute; left: 0px; top: 0px;"></canvas>
